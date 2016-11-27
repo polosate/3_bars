@@ -8,39 +8,26 @@ def load_data(filepath):
     return data
 
 
-def sort_by_seats_count(item):
-    return item['SeatsCount']
-
-
-def bar_names(data):
-    seat_count = data[0]['SeatsCount']
-    result = []
-    for item in data:
-        if item['SeatsCount'] == seat_count:
-            result.append(item['Name'])
-    return result
-
-
 def get_biggest_bar(data):
-    data.sort(key=sort_by_seats_count, reverse=True)
-    return bar_names(data)
+    biggets_bar = max(data, key=lambda x : x['SeatsCount'])
+    return biggets_bar['Address']
 
 
 def get_smallest_bar(data):
-    data.sort(key=sort_by_seats_count)
-    return bar_names(data)
+    smallest_bar = min(data, key=lambda x : x['SeatsCount'])
+    return smallest_bar['Address']
 
 
 def get_closest_bar(data, longitude, latitude):
-    data.sort(key=lambda item: sqrt(pow(float(item['Longitude_WGS84']) - longitude, 2) \
-        + pow(float(item['Latitude_WGS84']) - latitude, 2)))
-    return data[0]['Name']
-
+    closest_bar = min(data, key=lambda x: sqrt(pow(float(x['Longitude_WGS84'])\
+        - longitude, 2) + pow(float(x['Latitude_WGS84']) - latitude, 2)))
+    return closest_bar['Address']
 
 if __name__ == '__main__':
-    data = load_data('data-2897-2016-11-23.json')
-    print(get_biggest_bar(data))
-    print(get_smallest_bar(data))
+    filepath = input('Path to file >> ')
+    data = load_data(filepath)
+    print('Biggest bar:', get_biggest_bar(data))
+    print('Smallest bar:', get_smallest_bar(data))
     latitude = float(input('Input latitude >> '))
     longitude = float(input('Input longitude >> '))
-    print(get_closest_bar(data, longitude, latitude))
+    print('Closest bar:', get_closest_bar(data, longitude, latitude))
